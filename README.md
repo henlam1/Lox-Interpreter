@@ -22,6 +22,7 @@ Run the main file
 - &lt;path_to_file&gt; : Path to the Lox file you want to interpret
 
 Example usage
+
 ```python main.py parse test_files/parsing/arithmetic/mul_div.lox```
 
 ## Running Tests
