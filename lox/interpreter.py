@@ -1,0 +1,97 @@
+import sys
+from .tokens import *
+from .expr import *
+from .runtimeError import *
+from .lox import *
+
+class Interpreter(Expr.Visitor):
+    def __init__(self, expr: Expr) -> None:
+        self.expr = expr
+    
+    def interpret(self):
+        try:
+            value = self.fixValue(self.evaluate(self.expr))
+            return value
+        except RuntimeError as r:
+            Lox.runtimeError(r)
+
+    def visitLiteralExpr(self, expr: Literal):
+        return expr.value
+    
+    def visitGroupingExpr(self, expr: Grouping):
+        return self.evaluate(expr.expr)
+
+    def visitUnaryExpr(self, expr: Unary):
+        right = self.evaluate(expr.right)
+
+        match expr.operator.type:
+            case TOKEN_TYPE.BANG:
+                return not self.isTruthy(right)
+            case TOKEN_TYPE.MINUS:
+                checkNumberOperand(expr.operator, right)
+                return -right
+            case _:
+                return None
+    
+    def visitBinaryExpr(self, expr: Binary):
+        left = self.evaluate(expr.expr)
+        right = self.evaluate(expr.right)
+
+        # Order of PEMDAS reversed
+        match expr.operator.type:
+            # Unary
+            case TOKEN_TYPE.BANG_EQUAL:
+                return not (left == right)
+            case TOKEN_TYPE.EQUAL_EQUAL:
+                return left == right
+            # Comparison
+            case TOKEN_TYPE.GREATER:
+                checkNumberOperands(expr.operator, left, right)
+                return left > right
+            case TOKEN_TYPE.GREATER_EQUAL:
+                checkNumberOperands(expr.operator, left, right)
+                return left >= right
+            case TOKEN_TYPE.LESS:
+                checkNumberOperands(expr.operator, left, right)
+                return left < right
+            case TOKEN_TYPE.LESS_EQUAL:
+                checkNumberOperands(expr.operator, left, right)
+                return left <= right
+            # Arithmetic
+            case TOKEN_TYPE.MINUS:
+                checkNumberOperands(expr.operator, left, right)
+                return left - right
+            case TOKEN_TYPE.PLUS:
+                if ((isinstance(left, float) and isinstance(right, float)) or
+                    (isinstance(left, str) and isinstance(right, str))):
+                        return left + right
+                raise RuntimeError(expr.operator, "Operands must be numbers or strings")
+            case TOKEN_TYPE.SLASH:
+                checkNumberOperands(expr.operator, left, right)
+                if right == 0:
+                    raise RuntimeError(expr.operator, "Division by zero error!")
+                return left / right
+            case TOKEN_TYPE.STAR:
+                checkNumberOperands(expr.operator, left, right)
+                return left * right
+    
+    def isTruthy(self, obj):
+        if obj is None: return False
+        if isinstance(obj, bool): return obj
+        return True
+    
+    def evaluate(self, expr: Expr):
+        return expr.accept(self)
+    
+    def fixValue(self, value):
+        # Convert bools
+        if value is None: return "nil"
+        if isinstance(value, bool): return str(value).lower()
+
+        # Convert floats to ints
+        if isinstance(value, float): 
+            if value.is_integer(): return str(int(value))
+            return str(value)
+
+        # Return strings
+        return value
