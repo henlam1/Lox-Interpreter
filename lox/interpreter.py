@@ -1,19 +1,52 @@
-import sys
 from .tokens import *
 from .expr import *
+from .stmt import *
 from .runtimeError import *
 from .lox import *
 
 class Interpreter(Expr.Visitor):
-    def __init__(self, expr: Expr) -> None:
-        self.expr = expr
+    def __init__(self, stmts: list[Stmt]) -> None:
+        self.stmts = stmts
     
     def interpret(self):
         try:
-            value = self.fixValue(self.evaluate(self.expr))
-            return value
+            for stmt in self.stmts:
+                self.execute(stmt)
         except RuntimeError as r:
             Lox.runtimeError(r)
+    
+    def fixValue(self, value):
+        # Convert bools
+        if value is None: return "nil"
+        if isinstance(value, bool): return str(value).lower()
+
+        # Convert floats to ints
+        if isinstance(value, float): 
+            if value.is_integer(): return str(int(value))
+            return str(value)
+
+        # Return strings
+        return value
+
+    def isTruthy(self, obj):
+        if obj is None: return False
+        if isinstance(obj, bool): return obj
+        return True
+    
+    def evaluate(self, expr: Expr):
+        return expr.accept(self)
+    
+    def execute(self, stmt: Stmt):
+        return stmt.accept(self)
+    
+    def visitExpressionStmt(self, stmt: Stmt):
+        self.evaluate(stmt)
+        return
+    
+    def visitPrintStmt(self, stmt: Stmt):
+        value = self.evaluate(stmt)
+        print(self.fixValue(value))
+        return
 
     def visitLiteralExpr(self, expr: Literal):
         return expr.value
@@ -74,24 +107,3 @@ class Interpreter(Expr.Visitor):
             case TOKEN_TYPE.STAR:
                 checkNumberOperands(expr.operator, left, right)
                 return left * right
-    
-    def isTruthy(self, obj):
-        if obj is None: return False
-        if isinstance(obj, bool): return obj
-        return True
-    
-    def evaluate(self, expr: Expr):
-        return expr.accept(self)
-    
-    def fixValue(self, value):
-        # Convert bools
-        if value is None: return "nil"
-        if isinstance(value, bool): return str(value).lower()
-
-        # Convert floats to ints
-        if isinstance(value, float): 
-            if value.is_integer(): return str(int(value))
-            return str(value)
-
-        # Return strings
-        return value

@@ -45,21 +45,21 @@ def parse(file_contents, print_expr=False):
     # Parse to get expr
     tokens = tokenize(file_contents)
     parser = Parser(tokens)
-    expr = parser.parse()
+    stmts = parser.parse()
 
     # Check code errors
     if Lox.hasError: exit(65)
 
-    # Print expression
-    if print_expr:
-        print(expr)
+    # Print all statements
+    for stmt in stmts:
+        print(stmt)
 
-    return expr
+    return stmts
 
 def interpret(file_contents, print_output=False):
     # Interpret to get output
-    expr = parse(file_contents)
-    interpreter = Interpreter(expr)
+    stmts = parse(file_contents)
+    interpreter = Interpreter(stmts)
     output = interpreter.interpret()
 
     # Check code errors

@@ -1,5 +1,6 @@
 from .tokens import *
 from .expr import *
+from .stmt import *
 from .lox import *
 
 class ParseError(RuntimeError):
@@ -9,12 +10,30 @@ class Parser:
     def __init__(self, tokens) -> None:
         self.tokens = tokens
         self.current = 0
-    
+        
     def parse(self):
         try:
-            return self.expression()
+            statements = []
+            while not self.is_at_end():
+                statements.append(self.statement())
+            return statements
         except ParseError:
-            return None
+            return []
+    
+    def statement(self):
+        if self.match(TOKEN_TYPE.PRINT):
+            return self.printStatement()
+        return self.expressionStatement()
+    
+    def printStatement(self):
+        value = self.expression()
+        self.consume(TOKEN_TYPE.SEMICOLON, "Expect ';' after value.")
+        return Print(value)
+    
+    def expressionStatement(self):
+        expr = self.expression()
+        self.consume(TOKEN_TYPE.SEMICOLON, "Expect ';' after value.")
+        return Expression(expr)
     
     def expression(self):
         return self.equality()
