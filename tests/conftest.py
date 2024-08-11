@@ -1,18 +1,5 @@
 import pytest
 import subprocess
-# from main import tokenize as _tokenize, parse as _parse, interpret as _interpret
-
-# @pytest.fixture
-# def tokenize() -> callable:
-#     return _tokenize
-
-# @pytest.fixture
-# def parse() -> callable:
-#     return _parse
-
-# @pytest.fixture
-# def interpret() -> callable:
-#     return _interpret
 
 BASE_PATH = "test_files/"
 
