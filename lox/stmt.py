@@ -1,3 +1,6 @@
+from .expr import Expr
+from .token import Token
+
 # Stmt interface for our tokens
 class Stmt:
     class Visitor:
@@ -14,7 +17,7 @@ class Stmt:
         pass
 
 class Expression(Stmt):
-    def __init__(self, expr) -> None:
+    def __init__(self, expr: Expr) -> None:
         self.expr = expr
     
     def accept(self, visitor: Stmt.Visitor):
@@ -24,7 +27,7 @@ class Expression(Stmt):
         return f"{self.expr}"
     
 class Print(Stmt):
-    def __init__(self, expr) -> None:
+    def __init__(self, expr: Expr) -> None:
         self.expr = expr
     
     def accept(self, visitor: Stmt.Visitor):
@@ -34,7 +37,7 @@ class Print(Stmt):
         return f"{self.expr}"
 
 class Var(Stmt):
-    def __init__(self, name, initializer) -> None:
+    def __init__(self, name: Token, initializer: Expr) -> None:
         self.name = name
         self.initializer = initializer
     

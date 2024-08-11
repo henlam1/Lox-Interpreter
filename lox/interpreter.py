@@ -1,11 +1,13 @@
-from .tokens import *
-from .expr import *
-from .stmt import *
-from .runtimeError import *
-from .lox import *
+from .environment import Environment
+from .expr import Expr, Binary, Grouping, Literal, Unary, Variable
+from .lox import Lox
+from .runtimeError import RuntimeError, checkNumberOperand, checkNumberOperands
+from .stmt import Stmt, Expression, Print, Var
+from .tokenType import TOKEN_TYPE
 
 class Interpreter(Expr.Visitor):
     def __init__(self, stmts: list[Stmt]) -> None:
+        self.environment = Environment()
         self.stmts = stmts
     
     def interpret(self):
@@ -53,8 +55,11 @@ class Interpreter(Expr.Visitor):
         return
 
     def visitVarStmt(self, stmt: Var):
-        # Assign var name to value
-        pass
+        # Assign var value to value
+        value = None
+        if stmt.initializer:
+            value = self.evaluate(stmt.initializer)
+        self.environment.define(stmt.name.lexeme, value)
     
     # EXPR VISITORS    
     def visitBinaryExpr(self, expr: Binary):
@@ -118,4 +123,4 @@ class Interpreter(Expr.Visitor):
                 return None
     
     def visitVariableExpr(self, expr: Variable):
-        return expr.name
+        return self.environment.get(expr.name)

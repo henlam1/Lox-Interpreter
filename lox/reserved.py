@@ -1,4 +1,4 @@
-from .tokens import *
+from .tokenType import TOKEN_TYPE
 
 RESERVED = {
     "and":    TOKEN_TYPE.AND,

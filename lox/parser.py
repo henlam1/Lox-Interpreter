@@ -1,7 +1,7 @@
-from .tokens import *
-from .expr import *
-from .stmt import *
-from .lox import *
+from .lox import Lox
+from .expr import Binary, Grouping, Literal, Unary, Variable
+from .stmt import Expression, Print, Var
+from .tokenType import TOKEN_TYPE
 
 class ParseError(RuntimeError):
     pass
@@ -12,13 +12,10 @@ class Parser:
         self.current = 0
         
     def parse(self):
-        try:
-            statements = []
-            while not self.is_at_end():
-                statements.append(self.declaration())
-            return statements
-        except ParseError:
-            return []
+        statements = []
+        while not self.is_at_end():
+            statements.append(self.declaration())
+        return statements
     
     def declaration(self):
         try: 
@@ -31,6 +28,8 @@ class Parser:
     
     def varDeclaration(self):
         name = self.consume(TOKEN_TYPE.IDENTIFIER, "Expect variable name.")
+        # Initializers can have/not have values. 
+        # Ex: var x; OR var x = 1;
         initializer = None
         if self.match(TOKEN_TYPE.EQUAL):
             initializer = self.expression()

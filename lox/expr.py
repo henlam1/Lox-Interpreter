@@ -1,3 +1,4 @@
+from .token import Token
 # Expr interface for our tokens
 class Expr:
     class Visitor:
@@ -20,7 +21,7 @@ class Expr:
         pass
 
 class Binary(Expr):
-    def __init__(self, expr, operator, right) -> None:
+    def __init__(self, expr: Expr, operator: Token, right: Expr) -> None:
         self.expr = expr
         self.operator = operator
         self.right = right
@@ -32,7 +33,7 @@ class Binary(Expr):
         return f"({self.operator.lexeme} {self.expr} {self.right})"
 
 class Grouping(Expr):
-    def __init__(self, expr) -> None:
+    def __init__(self, expr: Expr) -> None:
         self.expr = expr
 
     def accept(self, visitor: Expr.Visitor):
@@ -42,7 +43,7 @@ class Grouping(Expr):
         return f"(group {self.expr})"
 
 class Literal(Expr):
-    def __init__(self, value) -> None:
+    def __init__(self, value: object) -> None:
         self.value = value
     
     def accept(self, visitor: Expr.Visitor):
@@ -53,7 +54,7 @@ class Literal(Expr):
         return str(self.value).lower()
 
 class Unary(Expr):
-    def __init__(self, operator, right) -> None:
+    def __init__(self, operator: Token, right: Expr) -> None:
         self.operator = operator
         self.right = right
     
@@ -64,7 +65,7 @@ class Unary(Expr):
         return f"({self.operator.lexeme} {self.right})"
     
 class Variable(Expr):
-    def __init__(self, name) -> None:
+    def __init__(self, name: str) -> None:
         self.name = name
     
     def accept(self, visitor: Expr.Visitor):

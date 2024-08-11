@@ -1,5 +1,5 @@
 import sys
-from .tokens import TOKEN_TYPE
+from .tokenType import TOKEN_TYPE
 
 class Lox:
     # Class variables
