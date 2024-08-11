@@ -1,16 +1,19 @@
 # Expr interface for our tokens
 class Expr:
     class Visitor:
-        def visitLiteralExpr(self, expr):
-            pass
-
-        def visitGroupExpr(self, expr):
-            pass
-    
         def visitUnaryExpr(self, expr):
             pass
         
         def visitBinaryExpr(self, expr):
+            pass
+
+        def visitGroupExpr(self, expr):
+            pass
+
+        def visitLiteralExpr(self, expr):
+            pass
+
+        def visitVariableExpr(self, expr):
             pass
 
     def accept(self, visitor):
@@ -59,3 +62,13 @@ class Grouping(Expr):
     
     def __str__(self) -> str:
         return f"(group {self.expr})"
+
+class Variable(Expr):
+    def __init__(self, name) -> None:
+        self.name = name
+    
+    def accept(self, visitor: Expr.Visitor):
+        return visitor.visitVariableExpr(self)
+
+    def __str__(self) -> str:
+        return f"{self.name}"

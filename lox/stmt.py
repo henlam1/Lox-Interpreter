@@ -7,6 +7,9 @@ class Stmt:
         def visitPrintStmt(self, expr):
             pass
 
+        def visitVarStmt(self, expr):
+            pass
+
     def accept(self, visitor):
         pass
 
@@ -29,3 +32,14 @@ class Print(Stmt):
     
     def __str__(self) -> str:
         return f"{self.expr}"
+
+class Var(Stmt):
+    def __init__(self, name, initializer) -> None:
+        self.name = name
+        self.initializer = initializer
+    
+    def accept(self, visitor: Stmt.Visitor):
+        return visitor.visitVarStmt(self)
+    
+    def __str__(self) -> str:
+        return f"{self.name} = {self.initializer}"

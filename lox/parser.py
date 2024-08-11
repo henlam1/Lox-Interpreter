@@ -15,11 +15,29 @@ class Parser:
         try:
             statements = []
             while not self.is_at_end():
-                statements.append(self.statement())
+                statements.append(self.declaration())
             return statements
         except ParseError:
             return []
     
+    def declaration(self):
+        try: 
+            if self.match(TOKEN_TYPE.VAR):
+                return self.varDeclaration()
+            return self.statement()
+        except ParseError:
+            self.synchronize()
+            return None
+    
+    def varDeclaration(self):
+        name = self.consume(TOKEN_TYPE.IDENTIFIER, "Expect variable name.")
+        initializer = None
+        if self.match(TOKEN_TYPE.EQUAL):
+            initializer = self.expression()
+        
+        self.consume(TOKEN_TYPE.SEMICOLON, "Expect ';' after variable declaration")
+        return Var(name, initializer)
+        
     def statement(self):
         if self.match(TOKEN_TYPE.PRINT):
             return self.printStatement()
@@ -88,13 +106,16 @@ class Parser:
         return self.primary()
     
     def primary(self):
+        # Booleans
         if self.match(TOKEN_TYPE.FALSE): return Literal(False)
         if self.match(TOKEN_TYPE.TRUE): return Literal(True)
         if self.match(TOKEN_TYPE.NIL): return Literal(None)
 
+        # Literals
         if self.match(TOKEN_TYPE.NUMBER, TOKEN_TYPE.STRING): 
             return Literal(self.previous().literal) # Token.literal
 
+        # Expressions
         if self.match(TOKEN_TYPE.LEFT_PAREN):
             # Error if empty expression
             expr = self.expression()
@@ -103,6 +124,10 @@ class Parser:
 
             self.consume(TOKEN_TYPE.RIGHT_PAREN, "Expect ')' after expression.")
             return Grouping(expr)
+        
+        # Identifiers
+        if self.match(TOKEN_TYPE.IDENTIFIER):
+            return Variable(self.previous())
 
         raise self.error(self.peek(), "Expect expression.")
     
@@ -143,3 +168,24 @@ class Parser:
     def error(self, token, message):
         Lox.parseError(token, message)
         return ParseError()
+    
+    def synchronize(self):
+        self.advance()
+
+        # Keep advancing tokens until we're at a new statement
+        while not self.is_at_end():
+            # We're at a new statement if we went past a semicolon
+            if self.previous().type == TOKEN_TYPE.SEMICOLON:
+                return
+            
+            # We're at a new statement if it starts with a keyword
+            tokenType = self.peek().type
+            keywords = set([TOKEN_TYPE.CLASS, TOKEN_TYPE.FUN, 
+                           TOKEN_TYPE.VAR, TOKEN_TYPE.FOR,
+                           TOKEN_TYPE.IF, TOKEN_TYPE.WHILE,
+                           TOKEN_TYPE.PRINT, TOKEN_TYPE.RETURN])
+            if tokenType in keywords:
+                return
+            
+            self.advance()
+

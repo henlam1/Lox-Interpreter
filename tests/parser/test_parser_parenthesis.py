@@ -5,7 +5,7 @@ def test_incomplete(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "[line 1] Error at end: Expect ')' after expression.\n"
+    assert err == "[line 1] Error at ;: Expect ')' after expression.\n"
     assert exit_code == 65
 
 def test_missing_expr(file_path, get_command, run_program):
