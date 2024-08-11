@@ -10,22 +10,22 @@ class Stmt:
     def accept(self, visitor):
         pass
 
-class Print(Stmt):
-    def __init__(self, value) -> None:
-        self.value = value
-    
-    def accept(self, visitor: Stmt.Visitor):
-        return visitor.visitBinaryExpr(self)
-    
-    def __str__(self) -> str:
-        return f"({self.value})"
-
 class Expression(Stmt):
     def __init__(self, expr) -> None:
         self.expr = expr
     
     def accept(self, visitor: Stmt.Visitor):
-        return visitor.visitBinaryExpr(self)
+        return visitor.visitExpressionStmt(self)
     
     def __str__(self) -> str:
-        return f"({self.expr})"
+        return f"{self.expr}"
+    
+class Print(Stmt):
+    def __init__(self, expr) -> None:
+        self.expr = expr
+    
+    def accept(self, visitor: Stmt.Visitor):
+        return visitor.visitPrintStmt(self)
+    
+    def __str__(self) -> str:
+        return f"{self.expr}"

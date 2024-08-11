@@ -9,9 +9,12 @@ class Interpreter(Expr.Visitor):
         self.stmts = stmts
     
     def interpret(self):
+        # FIX THIS. I'm only executing and not returning a value
+        # For now, unsure how to differentiate between null value from prints and actual value from exprStmts
         try:
             for stmt in self.stmts:
-                self.execute(stmt)
+                value = self.execute(stmt)
+            return self.fixValue(value)
         except RuntimeError as r:
             Lox.runtimeError(r)
     
@@ -39,15 +42,17 @@ class Interpreter(Expr.Visitor):
     def execute(self, stmt: Stmt):
         return stmt.accept(self)
     
-    def visitExpressionStmt(self, stmt: Stmt):
-        self.evaluate(stmt)
-        return
+    # STATEMENT VISITORS
+    def visitExpressionStmt(self, stmt: Expression):
+        value = self.evaluate(stmt.expr)
+        return value
     
-    def visitPrintStmt(self, stmt: Stmt):
-        value = self.evaluate(stmt)
+    def visitPrintStmt(self, stmt: Print):
+        value = self.evaluate(stmt.expr)
         print(self.fixValue(value))
-        return
-
+        return 
+    
+    # EXPR VISITORS
     def visitLiteralExpr(self, expr: Literal):
         return expr.value
     

@@ -1,1 +1,1 @@
-("hello" + "bar") + ("bar" + "quz")
+("hello" + "bar") + ("bar" + "quz");

@@ -19,7 +19,7 @@ def main():
         case "tokenize":
             tokenize(file_contents, print_tokens=True)
         case "parse":
-            parse(file_contents, print_expr=True)
+            parse(file_contents, print_stmts=True)
         case "evaluate":
             interpret(file_contents, print_output=True)
         case _:
@@ -41,7 +41,7 @@ def tokenize(file_contents, print_tokens=False):
 
     return tokens
 
-def parse(file_contents, print_expr=False):
+def parse(file_contents, print_stmts=False):
     # Parse to get expr
     tokens = tokenize(file_contents)
     parser = Parser(tokens)
@@ -51,8 +51,9 @@ def parse(file_contents, print_expr=False):
     if Lox.hasError: exit(65)
 
     # Print all statements
-    for stmt in stmts:
-        print(stmt)
+    if print_stmts:
+        for stmt in stmts:
+            print(stmt)
 
     return stmts
 
@@ -65,12 +66,12 @@ def interpret(file_contents, print_output=False):
     # Check code errors
     if Lox.hasRuntimeError: exit(70)
 
-    # Print output
-    if print_output:
+    # Print output and return it if it's an actual value
+    if print_output and output:
         print(output)
-
-    return output
+        return output
     
+    return "Shit"
 
 if __name__ == "__main__":
     main()
