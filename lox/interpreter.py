@@ -50,27 +50,13 @@ class Interpreter(Expr.Visitor):
     def visitPrintStmt(self, stmt: Print):
         value = self.evaluate(stmt.expr)
         print(self.fixValue(value))
-        return 
-    
-    # EXPR VISITORS
-    def visitLiteralExpr(self, expr: Literal):
-        return expr.value
-    
-    def visitGroupingExpr(self, expr: Grouping):
-        return self.evaluate(expr.expr)
+        return
 
-    def visitUnaryExpr(self, expr: Unary):
-        right = self.evaluate(expr.right)
-
-        match expr.operator.type:
-            case TOKEN_TYPE.BANG:
-                return not self.isTruthy(right)
-            case TOKEN_TYPE.MINUS:
-                checkNumberOperand(expr.operator, right)
-                return -right
-            case _:
-                return None
+    def visitVarStmt(self, stmt: Var):
+        # Assign var name to value
+        pass
     
+    # EXPR VISITORS    
     def visitBinaryExpr(self, expr: Binary):
         left = self.evaluate(expr.expr)
         right = self.evaluate(expr.right)
@@ -112,3 +98,24 @@ class Interpreter(Expr.Visitor):
             case TOKEN_TYPE.STAR:
                 checkNumberOperands(expr.operator, left, right)
                 return left * right
+    
+    def visitGroupingExpr(self, expr: Grouping):
+        return self.evaluate(expr.expr)
+    
+    def visitLiteralExpr(self, expr: Literal):
+        return expr.value
+    
+    def visitUnaryExpr(self, expr: Unary):
+        right = self.evaluate(expr.right)
+
+        match expr.operator.type:
+            case TOKEN_TYPE.BANG:
+                return not self.isTruthy(right)
+            case TOKEN_TYPE.MINUS:
+                checkNumberOperand(expr.operator, right)
+                return -right
+            case _:
+                return None
+    
+    def visitVariableExpr(self, expr: Variable):
+        return expr.name
