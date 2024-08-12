@@ -2,10 +2,13 @@ from .token import Token
 # Expr interface for our tokens
 class Expr:
     class Visitor:
+        def visitAssignExpr(self, expr):
+            pass
+
         def visitBinaryExpr(self, expr):
             pass
 
-        def visitGroupExpr(self, expr):
+        def visitGroupingExpr(self, expr):
             pass
 
         def visitLiteralExpr(self, expr):
@@ -20,6 +23,14 @@ class Expr:
     def accept(self, visitor):
         pass
 
+class Assign(Expr):
+    def __init__(self, name: Token, value: Expr) -> None:
+        self.name = name
+        self.value = value
+    
+    def accept(self, visitor: Expr.Visitor):
+        return visitor.visitAssignExpr(self)
+    
 class Binary(Expr):
     def __init__(self, expr: Expr, operator: Token, right: Expr) -> None:
         self.expr = expr

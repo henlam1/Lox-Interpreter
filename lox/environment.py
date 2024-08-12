@@ -10,4 +10,11 @@ class Environment:
     def get(self, name: Token):
         if name.lexeme in self.map:
             return self.map[name.lexeme]
+        
+        raise RuntimeError(name, f"Undefined variable '{name.lexeme}'.")
+    
+    def assign(self, name: Token, value: object):
+        if name.lexeme in self.map:
+            self.map[name.lexeme] = value
+            return
         raise RuntimeError(name, f"Undefined variable '{name.lexeme}'.")

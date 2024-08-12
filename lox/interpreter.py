@@ -1,5 +1,5 @@
 from .environment import Environment
-from .expr import Expr, Binary, Grouping, Literal, Unary, Variable
+from .expr import Expr, Assign, Binary, Grouping, Literal, Unary, Variable
 from .lox import Lox
 from .runtimeError import RuntimeError, checkNumberOperand, checkNumberOperands
 from .stmt import Stmt, Expression, Print, Var
@@ -61,7 +61,12 @@ class Interpreter(Expr.Visitor):
             value = self.evaluate(stmt.initializer)
         self.environment.define(stmt.name.lexeme, value)
     
-    # EXPR VISITORS    
+    # EXPR VISITORS
+    def visitAssignExpr(self, expr: Assign):
+        value = self.evaluate(expr.value)
+        self.environment.assign(expr.name, value)
+        return value
+    
     def visitBinaryExpr(self, expr: Binary):
         left = self.evaluate(expr.expr)
         right = self.evaluate(expr.right)
