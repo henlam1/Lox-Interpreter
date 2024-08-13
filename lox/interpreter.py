@@ -9,18 +9,16 @@ class Interpreter(Expr.Visitor):
     def __init__(self, stmts: list[Stmt]) -> None:
         self.environment = Environment()
         self.stmts = stmts
+        self.outputs = []
     
     def interpret(self):
-        # FIX THIS. I'm only executing and not returning a value
-        # For now, unsure how to differentiate between null value from prints and actual value from exprStmts
         try:
-            outputs = []
             for stmt in self.stmts:
                 # Keep values from exprStmts
                 value = self.execute(stmt)
                 if isinstance(stmt, Expression):
-                    outputs.append(self.fixValue(value))
-            return outputs
+                    self.outputs.append(self.fixValue(value))
+            return self.outputs
         except RuntimeError as r:
             Lox.runtimeError(r)
     
@@ -55,7 +53,9 @@ class Interpreter(Expr.Visitor):
         self.environment = newEnv
         try:
             for stmt in stmts:
-                self.execute(stmt)
+                value = self.execute(stmt)
+                if isinstance(stmt, Expression):
+                    self.outputs.append(self.fixValue(value))
         finally:
             # Restore previous env
             self.environment = prevEnv

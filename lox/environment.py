@@ -1,3 +1,4 @@
+from .runtimeError import RuntimeError
 from .token import Token
 
 class Environment:

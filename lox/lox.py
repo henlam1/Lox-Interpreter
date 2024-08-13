@@ -22,7 +22,7 @@ class Lox:
     
     @staticmethod
     def runtimeError(error):
-        print({f"{error.message}\nline {error.token.line}]"}, file=sys.stderr)
+        print(f"{error.message}\n[line {error.token.line}]", file=sys.stderr)
         Lox.hasRuntimeError = True
 
     @staticmethod

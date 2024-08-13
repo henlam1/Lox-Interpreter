@@ -5,7 +5,7 @@ def test_unary_string(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "{'Operand must be a number.\\nline 1]'}\n"
+    assert err == "Operand must be a number.\n[line 1]\n"
     assert exit_code == 70
 
 def test_unary_bool(file_path, get_command, run_program):
@@ -13,7 +13,7 @@ def test_unary_bool(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "{'Operand must be a number.\\nline 1]'}\n"
+    assert err == "Operand must be a number.\n[line 1]\n"
     assert exit_code == 70
 
 def test_unary_group(file_path, get_command, run_program):
@@ -21,7 +21,7 @@ def test_unary_group(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "{'Operand must be a number.\\nline 1]'}\n"
+    assert err == "Operand must be a number.\n[line 1]\n"
     assert exit_code == 70
 
 def test_invalid_mul_operands(file_path, get_command, run_program):
@@ -29,7 +29,7 @@ def test_invalid_mul_operands(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "{'Operands must be numbers.\\nline 1]'}\n"
+    assert err == "Operands must be numbers.\n[line 1]\n"
     assert exit_code == 70
 
 def test_invalid_div_operands(file_path, get_command, run_program):
@@ -37,7 +37,7 @@ def test_invalid_div_operands(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "{'Operands must be numbers.\\nline 1]'}\n"
+    assert err == "Operands must be numbers.\n[line 1]\n"
     assert exit_code == 70
 
 def test_invalid_plus_operands(file_path, get_command, run_program):
@@ -45,7 +45,7 @@ def test_invalid_plus_operands(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "{'Operands must be numbers or strings\\nline 1]'}\n"
+    assert err == "Operands must be numbers or strings\n[line 1]\n"
     assert exit_code == 70
 
 def test_invalid_minus_operands(file_path, get_command, run_program):
@@ -53,7 +53,7 @@ def test_invalid_minus_operands(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "{'Operands must be numbers.\\nline 1]'}\n"
+    assert err == "Operands must be numbers.\n[line 1]\n"
     assert exit_code == 70
 
 def test_invalid_less_operands(file_path, get_command, run_program):
@@ -61,7 +61,7 @@ def test_invalid_less_operands(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "{'Operands must be numbers.\\nline 1]'}\n"
+    assert err == "Operands must be numbers.\n[line 1]\n"
     assert exit_code == 70
 
 def test_invalid_less_equals_operands(file_path, get_command, run_program):
@@ -69,7 +69,7 @@ def test_invalid_less_equals_operands(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "{'Operands must be numbers.\\nline 1]'}\n"
+    assert err == "Operands must be numbers.\n[line 1]\n"
     assert exit_code == 70
 
 def test_invalid_greater_operands(file_path, get_command, run_program):
@@ -77,7 +77,7 @@ def test_invalid_greater_operands(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "{'Operands must be numbers.\\nline 1]'}\n"
+    assert err == "Operands must be numbers.\n[line 1]\n"
     assert exit_code == 70
 
 def test_invalid_greater_equals_operands(file_path, get_command, run_program):
@@ -85,7 +85,7 @@ def test_invalid_greater_equals_operands(file_path, get_command, run_program):
     command = get_command
     out, err, exit_code = run_program(command, path)
     assert out == ""
-    assert err == "{'Operands must be numbers.\\nline 1]'}\n"
+    assert err == "Operands must be numbers.\n[line 1]\n"
     assert exit_code == 70
 
 # def test_(file_path, get_command, run_program):

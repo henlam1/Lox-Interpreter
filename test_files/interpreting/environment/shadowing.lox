@@ -1,0 +1,6 @@
+var x = "hello";
+x = "apple";
+{
+    var x = "world";
+    x;
+}

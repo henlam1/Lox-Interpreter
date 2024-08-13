@@ -72,7 +72,7 @@ class Parser:
             equals = self.previous()
             value = self.assignment()
         
-            if expr.isinstance(Variable):
+            if isinstance(expr, Variable):
                 name = expr.name
                 return Assign(name, value)
 
