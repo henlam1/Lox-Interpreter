@@ -61,17 +61,17 @@ def interpret(file_contents, print_output=False):
     # Interpret to get output
     stmts = parse(file_contents)
     interpreter = Interpreter(stmts)
-    output = interpreter.interpret()
+    outputs = interpreter.interpret()
 
     # Check code errors
     if Lox.hasRuntimeError: exit(70)
 
     # Print output and return it if it's an actual value
-    if print_output and output:
-        print(output)
-        return output
+    if print_output:
+        for output in outputs:
+            print(output)
     
-    return "Shit"
+    return outputs
 
 if __name__ == "__main__":
     main()

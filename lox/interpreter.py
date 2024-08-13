@@ -14,9 +14,13 @@ class Interpreter(Expr.Visitor):
         # FIX THIS. I'm only executing and not returning a value
         # For now, unsure how to differentiate between null value from prints and actual value from exprStmts
         try:
+            outputs = []
             for stmt in self.stmts:
+                # Keep values from exprStmts
                 value = self.execute(stmt)
-            return self.fixValue(value)
+                if isinstance(stmt, Expression):
+                    outputs.append(self.fixValue(value))
+            return outputs
         except RuntimeError as r:
             Lox.runtimeError(r)
     
