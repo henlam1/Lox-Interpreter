@@ -1,6 +1,6 @@
 from .lox import Lox
-from .expr import Assign, Binary, Grouping, Literal, Unary, Variable
-from .stmt import Expression, Print, Var
+from .expr import *
+from .stmt import *
 from .tokenType import TOKEN_TYPE
 
 class ParseError(RuntimeError):
@@ -38,6 +38,8 @@ class Parser:
         return Var(name, initializer)
         
     def statement(self):
+        if self.match(TOKEN_TYPE.LEFT_BRACE):
+            return Block(self.block())
         if self.match(TOKEN_TYPE.PRINT):
             return self.printStatement()
         return self.expressionStatement()
@@ -52,6 +54,15 @@ class Parser:
         self.consume(TOKEN_TYPE.SEMICOLON, "Expect ';' after value.")
         return Expression(expr)
     
+    def block(self):
+        # Build list of statements
+        stmts = []
+        while not self.check(TOKEN_TYPE.RIGHT_BRACE) and not self.is_at_end():
+            stmts.append(self.declaration())
+
+        self.consume(TOKEN_TYPE.RIGHT_BRACE, "Expect '}' after block.")
+        return stmts
+        
     def expression(self):
         return self.assignment()
     

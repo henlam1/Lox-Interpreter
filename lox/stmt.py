@@ -4,6 +4,9 @@ from .token import Token
 # Stmt interface for our tokens
 class Stmt:
     class Visitor:
+        def visitBlockStmt(self, stmts):
+            pass
+        
         def visitExpressionStmt(self, expr):
             pass
 
@@ -16,6 +19,16 @@ class Stmt:
     def accept(self, visitor):
         pass
 
+class Block(Stmt):
+    def __init__(self, stmts) -> None:
+        self.stmts = stmts
+    
+    def accept(self, visitor: Stmt.Visitor):
+        return visitor.visitBlockStmt(self)
+    
+    def __str__(self) -> str:
+        return ""
+    
 class Expression(Stmt):
     def __init__(self, expr: Expr) -> None:
         self.expr = expr
@@ -24,7 +37,7 @@ class Expression(Stmt):
         return visitor.visitExpressionStmt(self)
     
     def __str__(self) -> str:
-        return f"{self.expr}"
+        return str(self.expr)
     
 class Print(Stmt):
     def __init__(self, expr: Expr) -> None:
@@ -45,4 +58,4 @@ class Var(Stmt):
         return visitor.visitVarStmt(self)
     
     def __str__(self) -> str:
-        return f"{self.name} = {self.initializer}"
+        return ""

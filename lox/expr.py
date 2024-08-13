@@ -30,6 +30,9 @@ class Assign(Expr):
     
     def accept(self, visitor: Expr.Visitor):
         return visitor.visitAssignExpr(self)
+
+    def __str__(self) -> str:
+        return f"{self.name.lexeme} = {self.value}"
     
 class Binary(Expr):
     def __init__(self, expr: Expr, operator: Token, right: Expr) -> None:

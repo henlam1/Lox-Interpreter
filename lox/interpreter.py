@@ -1,8 +1,8 @@
 from .environment import Environment
-from .expr import Expr, Assign, Binary, Grouping, Literal, Unary, Variable
+from .expr import *
 from .lox import Lox
 from .runtimeError import RuntimeError, checkNumberOperand, checkNumberOperands
-from .stmt import Stmt, Expression, Print, Var
+from .stmt import *
 from .tokenType import TOKEN_TYPE
 
 class Interpreter(Expr.Visitor):
@@ -45,6 +45,20 @@ class Interpreter(Expr.Visitor):
         return stmt.accept(self)
     
     # STATEMENT VISITORS
+    def executeBlock(self, stmts: list, newEnv: Environment):
+        # Replace current env with block's env
+        prevEnv = self.environment
+        self.environment = newEnv
+        try:
+            for stmt in stmts:
+                self.execute(stmt)
+        finally:
+            # Restore previous env
+            self.environment = prevEnv
+            
+    def visitBlockStmt(self, stmt: Block):
+        self.executeBlock(stmt.stmts, Environment(self.environment))
+        
     def visitExpressionStmt(self, stmt: Expression):
         value = self.evaluate(stmt.expr)
         return value
@@ -52,7 +66,6 @@ class Interpreter(Expr.Visitor):
     def visitPrintStmt(self, stmt: Print):
         value = self.evaluate(stmt.expr)
         print(self.fixValue(value))
-        return
 
     def visitVarStmt(self, stmt: Var):
         # Assign var value to value
