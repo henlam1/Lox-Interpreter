@@ -67,6 +67,15 @@ class Interpreter(Expr.Visitor):
         value = self.evaluate(stmt.expr)
         return value
     
+    def visitIfStmt(self, stmt: If):
+        # Check the truthiness of condition
+        value = self.evaluate(stmt.condition)
+        if self.isTruthy(value):
+            self.execute(stmt.thenBranch)
+        elif stmt.elseBranch:
+            self.execute(stmt.elseBranch)
+        return None
+    
     def visitPrintStmt(self, stmt: Print):
         value = self.evaluate(stmt.expr)
         print(self.fixValue(value))

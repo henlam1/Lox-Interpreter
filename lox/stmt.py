@@ -10,6 +10,9 @@ class Stmt:
         def visitExpressionStmt(self, expr):
             pass
 
+        def visitIfStmt(self, expr):
+            pass
+
         def visitPrintStmt(self, expr):
             pass
 
@@ -38,6 +41,18 @@ class Expression(Stmt):
     
     def __str__(self) -> str:
         return str(self.expr)
+    
+class If(Stmt):
+    def __init__(self, condition: Expr, thenBranch: Stmt, elseBranch: Stmt) -> None:
+        self.condition = condition
+        self.thenBranch = thenBranch
+        self.elseBranch = elseBranch
+    
+    def accept(self, visitor: Stmt.Visitor):
+        return visitor.visitIfStmt(self)
+    
+    def __str__(self) -> str:
+        return ""
     
 class Print(Stmt):
     def __init__(self, expr: Expr) -> None:

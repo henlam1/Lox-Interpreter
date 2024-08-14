@@ -38,11 +38,27 @@ class Parser:
         return Var(name, initializer)
         
     def statement(self):
+        if self.match(TOKEN_TYPE.IF):
+            return self.ifStatement()
         if self.match(TOKEN_TYPE.LEFT_BRACE):
             return Block(self.block())
         if self.match(TOKEN_TYPE.PRINT):
             return self.printStatement()
         return self.expressionStatement()
+    
+    def ifStatement(self):
+        # Consume condition
+        self.consume(TOKEN_TYPE.LEFT_PAREN, "Expect '(' after 'if'.")
+        condition = self.expression()
+        self.consume(TOKEN_TYPE.RIGHT_PAREN, "Expect ')' after if condition.")
+
+        # Consume then and else branches
+        thenBranch = self.statement()
+        elseBranch = None
+        if self.match(TOKEN_TYPE.ELSE):
+            elseBranch = self.statement()
+        
+        return If(condition, thenBranch, elseBranch)
     
     def printStatement(self):
         value = self.expression()
