@@ -6,17 +6,23 @@ class Stmt:
     class Visitor:
         def visitBlockStmt(self, stmts):
             pass
-        
-        def visitExpressionStmt(self, expr):
-            pass
 
         def visitIfStmt(self, expr):
+            pass
+
+        def visitForStmt(self, expr):
             pass
 
         def visitPrintStmt(self, expr):
             pass
 
         def visitVarStmt(self, expr):
+            pass
+
+        def visitWhileStmt(self, expr):
+            pass
+
+        def visitExpressionStmt(self, expr):
             pass
 
     def accept(self, visitor):
@@ -41,7 +47,18 @@ class Expression(Stmt):
     
     def __str__(self) -> str:
         return str(self.expr)
+
+class For(Stmt):
+    def __init__(self, condition: Expr, body: Stmt) -> None:
+        self.condition = condition
+        self.body = body
     
+    def accept(self, visitor: Stmt.Visitor):
+        return visitor.visitForStmt(self)
+
+    def __str__(self) -> str:
+        return ""
+
 class If(Stmt):
     def __init__(self, condition: Expr, thenBranch: Stmt, elseBranch: Stmt) -> None:
         self.condition = condition
@@ -63,6 +80,17 @@ class Print(Stmt):
     
     def __str__(self) -> str:
         return f"{self.expr}"
+
+class While(Stmt):
+    def __init__(self, condition: Expr, body: Stmt) -> None:
+        self.condition = condition
+        self.body = body
+    
+    def accept(self, visitor: Stmt.Visitor):
+        return visitor.visitWhileStmt(self)
+
+    def __str__(self) -> str:
+        return ""
 
 class Var(Stmt):
     def __init__(self, name: Token, initializer: Expr) -> None:

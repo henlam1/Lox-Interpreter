@@ -44,6 +44,8 @@ class Parser:
             return Block(self.block())
         if self.match(TOKEN_TYPE.PRINT):
             return self.printStatement()
+        if self.match(TOKEN_TYPE.WHILE):
+            return self.whileStatement()
         return self.expressionStatement()
     
     def ifStatement(self):
@@ -65,6 +67,16 @@ class Parser:
         self.consume(TOKEN_TYPE.SEMICOLON, "Expect ';' after value.")
         return Print(value)
     
+    def whileStatement(self):
+        # Consume expression
+        self.consume(TOKEN_TYPE.LEFT_PAREN, "Expect '(' after 'while'.")
+        condition = self.expression()
+        self.consume(TOKEN_TYPE.RIGHT_PAREN, "Expect ')' after 'while'.")
+
+        # Create body
+        body = self.statement()
+        return While(condition, body)
+    
     def expressionStatement(self):
         expr = self.expression()
         self.consume(TOKEN_TYPE.SEMICOLON, "Expect ';' after value.")
@@ -85,7 +97,7 @@ class Parser:
     def assignment(self):
         # Match logical and/or
         expr = self.logical_or()
-        
+
         # Match assignments
         if self.match(TOKEN_TYPE.EQUAL):
             equals = self.previous()

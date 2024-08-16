@@ -53,19 +53,16 @@ class Interpreter(Expr.Visitor):
         self.environment = newEnv
         try:
             for stmt in stmts:
-                value = self.execute(stmt)
-                if isinstance(stmt, Expression):
-                    self.outputs.append(self.fixValue(value))
+                self.execute(stmt)
         finally:
             # Restore previous env
             self.environment = prevEnv
             
     def visitBlockStmt(self, stmt: Block):
         self.executeBlock(stmt.stmts, Environment(self.environment))
-        
-    def visitExpressionStmt(self, stmt: Expression):
-        value = self.evaluate(stmt.expr)
-        return value
+    
+    def visitForStmt(self, stmt: For):
+        pass
     
     def visitIfStmt(self, stmt: If):
         # Check the truthiness of condition
@@ -79,13 +76,22 @@ class Interpreter(Expr.Visitor):
     def visitPrintStmt(self, stmt: Print):
         value = self.evaluate(stmt.expr)
         print(self.fixValue(value))
-
+    
     def visitVarStmt(self, stmt: Var):
         # Assign var value to value
         value = None
         if stmt.initializer:
             value = self.evaluate(stmt.initializer)
         self.environment.define(stmt.name.lexeme, value)
+    
+    def visitWhileStmt(self, stmt: While):
+        while self.isTruthy(self.evaluate(stmt.condition)):
+            self.execute(stmt.body)
+        return None
+    
+    def visitExpressionStmt(self, stmt: Expression):
+        value = self.evaluate(stmt.expr)
+        return value
     
     # EXPR VISITORS
     def visitAssignExpr(self, expr: Assign):
