@@ -14,6 +14,9 @@ class Expr:
         def visitLiteralExpr(self, expr):
             pass
 
+        def visitLogicalExpr(self, expr):
+            pass
+
         def visitUnaryExpr(self, expr):
             pass
 
@@ -66,6 +69,18 @@ class Literal(Expr):
     def __str__(self) -> str:
         if self.value is None: return "nil"
         return str(self.value).lower()
+
+class Logical(Expr):
+    def __init__(self, left: Expr, operator: Token, right: Expr) -> None:
+        self.left = left
+        self.operator = operator
+        self.right = right
+    
+    def accept(self, visitor: Expr.Visitor):
+        return visitor.visitLogicalExpr(self)
+    
+    def __str__(self) -> str:
+        return f"({self.operator.lexeme} {self.expr} {self.right})"
 
 class Unary(Expr):
     def __init__(self, operator: Token, right: Expr) -> None:

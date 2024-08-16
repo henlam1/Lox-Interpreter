@@ -140,6 +140,19 @@ class Interpreter(Expr.Visitor):
     
     def visitLiteralExpr(self, expr: Literal):
         return expr.value
+
+    def visitLogicalExpr(self, expr: Logical):
+        left = self.evaluate(expr.left)
+        if expr.operator.type == TOKEN_TYPE.OR:
+            # Short circuit if left is true
+            if self.isTruthy(left):
+                return left
+        else:
+            # Short circuit if left is false
+            if not self.isTruthy(left):
+                return left
+        
+        return self.evaluate(expr.right)
     
     def visitUnaryExpr(self, expr: Unary):
         right = self.evaluate(expr.right)

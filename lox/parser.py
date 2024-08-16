@@ -83,7 +83,10 @@ class Parser:
         return self.assignment()
     
     def assignment(self):
-        expr = self.equality()
+        # Match logical and/or
+        expr = self.logical_or()
+        
+        # Match assignments
         if self.match(TOKEN_TYPE.EQUAL):
             equals = self.previous()
             value = self.assignment()
@@ -93,7 +96,24 @@ class Parser:
                 return Assign(name, value)
 
             self.error(equals, "Invalid assignment target.")
+        return expr
+    
+    def logical_or(self):
+        expr = self.logical_and()
+        while self.match(TOKEN_TYPE.OR):
+            operator = self.previous()
+            right = self.logical_and()
+            expr = Logical(expr, operator, right)
+        
+        return expr
 
+    def logical_and(self):
+        expr = self.equality()
+        while self.match(TOKEN_TYPE.AND):
+            operator = self.previous()
+            right = self.equality()
+            expr = Logical(expr, operator, right)
+        
         return expr
     
     def equality(self):
