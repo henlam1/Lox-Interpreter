@@ -38,16 +38,18 @@ class Parser:
         return Var(name, initializer)
         
     def statement(self):
+        # Parse control flows
         if self.match(TOKEN_TYPE.FOR):
             return self.forStatement()
         if self.match(TOKEN_TYPE.IF):
             return self.ifStatement()
-        if self.match(TOKEN_TYPE.LEFT_BRACE):
-            return Block(self.block())
         if self.match(TOKEN_TYPE.PRINT):
             return self.printStatement()
         if self.match(TOKEN_TYPE.WHILE):
             return self.whileStatement()
+        # Parse block
+        if self.match(TOKEN_TYPE.LEFT_BRACE):
+            return Block(self.block())
         return self.expressionStatement()
     
     def forStatement(self):
