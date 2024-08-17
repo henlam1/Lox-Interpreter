@@ -38,6 +38,8 @@ class Parser:
         return Var(name, initializer)
         
     def statement(self):
+        if self.match(TOKEN_TYPE.FOR):
+            return self.forStatement()
         if self.match(TOKEN_TYPE.IF):
             return self.ifStatement()
         if self.match(TOKEN_TYPE.LEFT_BRACE):
@@ -48,6 +50,48 @@ class Parser:
             return self.whileStatement()
         return self.expressionStatement()
     
+    def forStatement(self):
+        self.consume(TOKEN_TYPE.LEFT_PAREN, "Expect '(' after 'for'.")
+
+        # Parse first clause - initializer
+        initializer = None
+        if self.match(TOKEN_TYPE.SEMICOLON):
+            pass
+        elif self.match(TOKEN_TYPE.VAR):
+            initializer = self.varDeclaration()
+        else:
+            initializer = self.expressionStatement()
+        
+        # Parse second clause - condition
+        condition = None
+        if not self.check(TOKEN_TYPE.SEMICOLON):    # Look at the symbol ahead
+            condition = self.expression()
+        self.consume(TOKEN_TYPE.SEMICOLON, "Expect ';' after loop condition.")
+        
+        # Parse third clause - increment
+        increment = None
+        if not self.check(TOKEN_TYPE.RIGHT_PAREN):  # Look at the symbol ahead
+            increment = self.expression()
+        self.consume(TOKEN_TYPE.RIGHT_PAREN, "Expect ')' after after for clauses.")
+
+        # Parse body
+        body = self.statement()
+
+        # Increment exists
+        if increment:
+            body = Block([body, increment])
+        
+        # Condition doesn't exist
+        if not condition:
+            condition = Literal(True)
+        body = While(condition, body)
+
+        # Initializer exists
+        if initializer:
+            body = Block([initializer, body])
+
+        return body
+
     def ifStatement(self):
         # Consume condition
         self.consume(TOKEN_TYPE.LEFT_PAREN, "Expect '(' after 'if'.")

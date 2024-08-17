@@ -29,7 +29,7 @@ class Stmt:
         pass
 
 class Block(Stmt):
-    def __init__(self, stmts) -> None:
+    def __init__(self, stmts: list) -> None:
         self.stmts = stmts
     
     def accept(self, visitor: Stmt.Visitor):
@@ -47,17 +47,6 @@ class Expression(Stmt):
     
     def __str__(self) -> str:
         return str(self.expr)
-
-class For(Stmt):
-    def __init__(self, condition: Expr, body: Stmt) -> None:
-        self.condition = condition
-        self.body = body
-    
-    def accept(self, visitor: Stmt.Visitor):
-        return visitor.visitForStmt(self)
-
-    def __str__(self) -> str:
-        return ""
 
 class If(Stmt):
     def __init__(self, condition: Expr, thenBranch: Stmt, elseBranch: Stmt) -> None:

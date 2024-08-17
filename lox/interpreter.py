@@ -61,9 +61,6 @@ class Interpreter(Expr.Visitor):
     def visitBlockStmt(self, stmt: Block):
         self.executeBlock(stmt.stmts, Environment(self.environment))
     
-    def visitForStmt(self, stmt: For):
-        pass
-    
     def visitIfStmt(self, stmt: If):
         # Check the truthiness of condition
         value = self.evaluate(stmt.condition)
