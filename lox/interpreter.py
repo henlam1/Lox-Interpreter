@@ -171,3 +171,6 @@ class Interpreter(Expr.Visitor):
     
     def visitVariableExpr(self, expr: Variable):
         return self.environment.get(expr.name)
+    
+# LEFT OFF HERE
+# https://craftinginterpreters.com/functions.html
